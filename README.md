@@ -11,7 +11,7 @@ This repository serves as a platform to share my progress and development throug
 
 Feel free to explore the different folders and files, each representing a specific topic or project covered in the course. I encourage you to browse the code, provide feedback, and even contribute if you find something interesting!
 
-📧 **Contact:** henriquebkrause2312@gmail.com
+📧 **Contact:** contato.henriquekrause@gmail.com
 
 
 ## How to Contribute
