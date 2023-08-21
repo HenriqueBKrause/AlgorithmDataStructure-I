@@ -1,95 +1,82 @@
-#include <stdio.h>
-#include <stdlib.h>
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include <math.h>
+  
+  
+  
+  Matrix* matrix_create(void) {
 
-#define MAX_ROWS 1000
-#define MAX_COLUMNS 1000
+  Matrix* matrix = malloc(sizeof(Matrix));
 
-struct matrix {
-  int rows;
-  int columns;
-  float info[MAX_ROWS][MAX_COLUMNS];
-};
+  int m, n;
+  scanf("%d %d", &m, &n);
 
-Matrix* matrix_create(int rows, int columns) {
-  Matrix* m = (Matrix*)malloc(sizeof(Matrix));
-  m->rows = rows;
-  m->columns = columns;
-  for (int i = 0; i < rows; i++) {
-    for (int j = 0; j < columns; j++) {
-      m->info[i][j] = 0.0;
-    }
+
+  matrix->rows = malloc(m * sizeof(List));
+  matrix->columns = malloc(n * sizeof(List));
+
+  for (int i = 0; i < m; i++) {
+    matrix->rows[i] = list_create();
   }
-  return m;
+
+  for (int j = 0; j < n; j++) {
+    matrix->columns[j] = list_create();
+  }
+
+  
+  int i, j, value;
+  while (scanf("%d %d %d", &i, &j, &value) != EOF) {
+ 
+    list_add_tail(matrix->rows[i], value, j);
+
+    list_add_tail(matrix->columns[j], value, i);
+  }
+
+  return matrix;
 }
 
-void matrix_destroy(Matrix* m) {
-  free(m);
+
+void matrix_destroy(Matrix* matrix) {
+
+  for (int i = 0; i < matrix->m; i++) {
+    list_destroy(matrix->rows[i]);
+  }
+
+  for (int j = 0; j < matrix->n; j++) {
+    list_destroy(matrix->columns[j]);
+  }
+
+  free(matrix);
 }
 
-void matrix_print(Matrix* m) {
-  for (int i = 0; i < m->rows; i++) {
-    for (int j = 0; j < m->columns; j++) {
-      printf("%f ", m->info[i][j]);
-    }
+
+void matrix_print(Matrix* matrix) {
+
+  for (int i = 0; i < matrix->m; i++) {
+
+    list_print(matrix->rows[i]);
+
     printf("\n");
   }
 }
 
+
 Matrix* matrix_add(Matrix* m1, Matrix* m2) {
-  Matrix* sum = matrix_create(m1->rows, m1->columns);
-  for (int i = 0; i < m1->rows; i++) {
-    for (int j = 0; j < m1->columns; j++) {
-      sum->info[i][j] = m1->info[i][j] + m2->info[i][j];
-    }
-  }
-  return sum;
-}
 
-Matrix* matrix_multiply(Matrix* m1, Matrix* m2) {
-  Matrix* product = matrix_create(m1->rows, m2->columns);
-  for (int i = 0; i < m1->rows; i++) {
-    for (int j = 0; j < m2->columns; j++) {
-      product->info[i][j] = 0.0;
-      for (int k = 0; k < m1->columns; k++) {
-        product->info[i][j] += m1->info[i][k] * m2->info[k][j];
-      }
-    }
-  }
-  return product;
-}
+  Matrix* sum = matrix_create();
 
-Matrix* matrix_transpose(Matrix* m) {
-  Matrix* transpose = matrix_create(m->columns, m->rows);
-  for (int i = 0; i < m->rows; i++) {
-    for (int j = 0; j < m->columns; j++) {
-      transpose->info[j][i] = m->info[i][j];
-    }
-  }
-  return transpose;
-}
 
-float matrix_getelem(Matrix* m, int x, int y) {
-  if (x < 0 || x >= m->rows || y < 0 || y >= m->columns) {
-    return 0.0;
-  }
-  return m->info[x][y];
-}
+  for (int i = 0; i < m1->m; i++) {
+    
+    List* row1 = m1->rows[i];
 
-void matrix_setelem(Matrix* m, int x, int y, float value) {
-  if (x < 0 || x >= m->rows || y < 0 || y >= m->columns) {
-    return;
-  }
-  m->info[x][y] = value;
-}
 
-int main(void) {
-  Matrix* A = matrix_create(44, 4);
-  for (int i = 0; i < 44; i++) {
-    for (int j = 0; j < 4; j++) {
-      Matrix_setelem(A, i, j, 0.0);
-    }
-  }
-  Matrix_setelem(A, 0, 0, 50.0);
-  Matrix_setelem(A, 1, 0, 10.0);
-  Matrix_setelem(A, 2, 0, 20.0);
-  Matrix_
+    List* row2 = m2->rows[i];
+
+
+    ListNode* node1 = row1->head;
+    ListNode* node2 = row2->head;
+    while (node1 != NULL && node2 != NULL) {
+
+      float value1 = node1->value;
+      float value2 = node2->value;
