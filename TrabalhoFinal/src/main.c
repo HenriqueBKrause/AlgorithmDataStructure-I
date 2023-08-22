@@ -10,22 +10,31 @@ struct matrix {
 };
 typedef struct matrix Matriz;
 
+// Função para criar uma matriz
 Matriz* matrix_create(void) {
+    // Declaração de variáveis
     int m, n;
+
+    // Leitura dos tamanhos da matriz
     scanf("%d %d", &m, &n);
 
+    // Alocação de memória para a matriz
     Matriz* head = (Matriz*)malloc(sizeof(Matriz));
+
+    // Inicialização da matriz
     head->line = -1;
     head->column = -1;
     head->right = head;
     head->below = head;
 
+    // Criação dos elementos da matriz
     Matriz* lastInRow[m];
     for (int i = 0; i < m; i++) {
         lastInRow[i] = head;
     }
 
     while (1) {
+        // Leitura dos elementos da matriz
         int i, j;
         float value;
         scanf("%d %d %f", &i, &j, &value);
@@ -33,15 +42,18 @@ Matriz* matrix_create(void) {
             break;
         }
 
+        // Criação de um novo elemento
         Matriz* newElem = (Matriz*)malloc(sizeof(Matriz));
         newElem->line = i;
         newElem->column = j;
         newElem->info = value;
 
+        // Inserção do elemento na matriz
         newElem->right = lastInRow[i]->right;
         lastInRow[i]->right = newElem;
         lastInRow[i] = newElem;
 
+        // Inserção do elemento na coluna da matriz
         Matriz* currentCol = head;
         while (currentCol->column != j) {
             currentCol = currentCol->right;
@@ -50,21 +62,33 @@ Matriz* matrix_create(void) {
         currentCol->below = newElem;
     }
 
+    // Retorno da matriz
     return head;
 }
 
+// Função para destruir uma matriz
 void matrix_destroy(Matriz* m) {
+    // Declaração de variáveis
     Matriz* current = m->right;
+
+    // Destruição dos elementos da matriz
     while (current != m) {
         Matriz* next = current->right;
         free(current);
         current = next;
     }
+
+    // Destruição da matriz
     free(m);
 }
 
+
+// Função para imprimir uma matriz
 void matrix_print(Matriz* m) {
+    // Declaração de variáveis
     Matriz* rowHead = m->right;
+
+    // Impressão dos elementos da matriz
     while (rowHead != m) {
         Matriz* current = rowHead->right;
         while (current != rowHead) {
@@ -75,6 +99,7 @@ void matrix_print(Matriz* m) {
         rowHead = rowHead->below;
     }
 }
+
 
 Matriz* matrix_add(Matriz* m, Matriz* n) {
     if (m == NULL || n == NULL || m->line != n->line || m->column != n->column) {
@@ -140,7 +165,6 @@ Matriz* matrix_add(Matriz* m, Matriz* n) {
 
     return result;
 }
-
 
 Matriz* matrix_multiply(Matriz* m, Matriz* n) {
     if (m == NULL || n == NULL || m->column != n->line) {
@@ -209,7 +233,6 @@ Matriz* matrix_multiply(Matriz* m, Matriz* n) {
     return result;
 }
 
-
 Matriz* matrix_transpose(Matriz* m) {
     int numRows = m->column;
     int numCols = m->line;
@@ -251,7 +274,6 @@ Matriz* matrix_transpose(Matriz* m) {
     return result;
 }
 
-
 float matrix_getelem(Matriz* m, int x, int y) {
     if (x < 0 || x >= m->line || y < 0 || y >= m->column) {
         // Índices fora dos limites da matriz
@@ -273,7 +295,6 @@ float matrix_getelem(Matriz* m, int x, int y) {
 
     return 0.0; // Elemento não encontrado, assume-se zero
 }
-
 
 void matrix_setelem(Matriz* m, int x, int y, float elem) {
     if (x < 0 || x >= m->line || y < 0 || y >= m->column) {
@@ -309,22 +330,31 @@ void matrix_setelem(Matriz* m, int x, int y, float elem) {
     }
 }
 
+
+
+
 int main(void) {
     /* Inicializacao da aplicacao ... */
     Matriz* A = matrix_create();
     matrix_print(A);
+
     Matriz* B = matrix_create();
     matrix_print(B);
+
     Matriz* C = matrix_add(A, B);
     matrix_print(C);
     matrix_destroy(C);
+
     C = matrix_multiply(A, B);
     matrix_print(C);
     matrix_destroy(C);
+
     C = matrix_transpose(A);
     matrix_print(C);
     matrix_destroy(C);
+
     matrix_destroy(A);
     matrix_destroy(B);
+
     return 0;
 }
