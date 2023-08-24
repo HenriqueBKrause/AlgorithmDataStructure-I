@@ -3,28 +3,29 @@
 
 
 
-int main ( void ) {
-    /* Inicializacao da aplicacao ... */
-    Matriz* A = matrix_create();
-    matrix_print(A);
 
-    Matriz* B = matrix_create();
-    matrix_print(B);
+int main() {
+    unsigned int matrixSize = 1000; 
 
-    Matriz* C = matrix_add(A, B);
-    matrix_print(C);
-    matrix_destroy(C);
+    Matriz* matrixA = matrix_create(matrixSize);
+    Matriz* matrixB = matrix_create(matrixSize);
 
-    C = matrix_multiply(A, B);
-    matrix_print(C);
-    matrix_destroy(C);
+    clock_t start, end;
 
-    C = matrix_transpose(A);
-    matrix_print(C);
-    matrix_destroy(C);
+    start = clock();
+    Matriz* resultNormal = matrix_multiply(matrixA, matrixB);
+    end = clock();
+    double cpu_time_used_normal = ((double)(end - start)) / CLOCKS_PER_SEC;
 
-    matrix_destroy(A);
-    matrix_destroy(B);
+    printf("Time taken for normal matrix multiplication: %f seconds\n", cpu_time_used_normal);
 
-    return 0;
+
+    start = clock();
+    Matriz* resultBruteForce = matrix_multiply_brute_force(matrixA, matrixB);
+    end = clock();
+    double cpu_time_used_bruteforce = ((double)(end - start)) / CLOCKS_PER_SEC;
+
+    printf("Time taken for brute force matrix multiplication: %f seconds\n", cpu_time_used_bruteforce);
+
+return 0;
 }

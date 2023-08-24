@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 
 //Estrutura
@@ -15,288 +16,43 @@ typedef struct matrix Matriz;
 
 
 // Função 1 =  Cria uma matriz
-Matriz* matrix_create(void) {
-
-
-// Trocar o corpo dessa função para fazer o teste 2
-
-
-}
-
-// Função 2 = destruir matriz
-void matrix_destroy(Matriz* m) {
-    
-    Matriz* current = m->right;
-
-    // Destruição dos elementos
-    while (current != m) {
-        Matriz* next = current->right;
-        free(current);
-        current = next;
-    }
-
-    free(m);
-}
-
-
-// Função 3 = imprimir matriz 
-void matrix_print(Matriz* m) {
-
-    Matriz* rowHead = m->right;
-
-    // Imprimir os elemnetos
-    while (rowHead != m) {
-        Matriz* current = rowHead->right;
-        while (current != rowHead) {
-            printf("(%d,%d): %.2f\t", current->line, current->column, current->info);
-            current = current->right;
-        }
-        printf("\n");
-        rowHead = rowHead->below;
-    }
-}
-
-
-// Função 4 = somar duas matrizes
-Matriz* matrix_add(Matriz* m, Matriz* n) {
-    if (m == NULL || n == NULL || m->line != n->line || m->column != n->column) {
-        
-        return NULL;
-    }
-
-    int numRows = m->line;
-    int numCols = m->column;
-
+Matriz* matrix_create(unsigned int m) {
     Matriz* result = (Matriz*)malloc(sizeof(Matriz));
-    result->line = numRows;
-    result->column = numCols;
+    result->line = m;
+    result->column = m;
     result->right = result;
     result->below = result;
 
-    Matriz* mRowHead = m->right;
-    Matriz* nRowHead = n->right;
+    srand(time(NULL)); // Seed the random number generator
 
-    for (int i = 0; i < numRows; i++) {
-        Matriz* mElem = mRowHead->right;
-        Matriz* nElem = nRowHead->right;
+    Matriz* currentRowHead = result;
 
+    for (int i = 0; i < m; i++) {
         Matriz* newRowHead = (Matriz*)malloc(sizeof(Matriz));
         newRowHead->line = -1;
         newRowHead->column = -1;
         newRowHead->right = newRowHead;
-        newRowHead->below = result->below;
-        result->below = newRowHead;
+        newRowHead->below = currentRowHead->below;
+        currentRowHead->below = newRowHead;
 
         Matriz* lastInRow = newRowHead;
 
-        for (int j = 0; j < numCols; j++) {
-            if (mElem->column == j && nElem->column == j) {
-                float sum = mElem->info + nElem->info;
-                if (sum != 0.0) {
-                    Matriz* newElem = (Matriz*)malloc(sizeof(Matriz));
-                    newElem->line = i;
-                    newElem->column = j;
-                    newElem->info = sum;
-
-                    lastInRow->right = newElem;
-                    newElem->right = newRowHead;
-                    lastInRow = newElem;
-                }
-
-                mElem = mElem->right;
-                nElem = nElem->right;
-            } else if (mElem->column == j) {
-                lastInRow->right = mElem;
-                lastInRow = mElem;
-                mElem = mElem->right;
-            } else if (nElem->column == j) {
-                lastInRow->right = nElem;
-                lastInRow = nElem;
-                nElem = nElem->right;
-            }
-        }
-
-        mRowHead = mRowHead->below;
-        nRowHead = nRowHead->below;
-    }
-
-    return result;
-}
-
-
-// Função 5 = multiplicar duas matrizes
-Matriz* matrix_multiply(Matriz* m, Matriz* n) {
-    if (m == NULL || n == NULL || m->column != n->line) {
-        // Matrizes inválidas para multiplicação
-        return NULL;
-    }
-
-    int numRows = m->line;
-    int numCols = n->column;
-
-    Matriz* result = (Matriz*)malloc(sizeof(Matriz));
-    result->line = numRows;
-    result->column = numCols;
-    result->right = result;
-    result->below = result;
-
-    Matriz* mRowHead = m->right;
-
-    for (int i = 0; i < numRows; i++) {
-        Matriz* nColHead = n->below;
-
-        Matriz* newRowHead = (Matriz*)malloc(sizeof(Matriz));
-        newRowHead->line = -1;
-        newRowHead->column = -1;
-        newRowHead->right = newRowHead;
-        newRowHead->below = result->below;
-        result->below = newRowHead;
-
-        Matriz* lastInRow = newRowHead;
-
-        for (int j = 0; j < numCols; j++) {
-            float sum = 0.0;
-
-            Matriz* mElem = mRowHead->right;
-            Matriz* nElem = nColHead->below;
-
-            while (mElem != mRowHead && nElem != nColHead) {
-                if (mElem->column < nElem->line) {
-                    mElem = mElem->right;
-                } else if (mElem->column > nElem->line) {
-                    nElem = nElem->below;
-                } else {
-                    sum += mElem->info * nElem->info;
-                    mElem = mElem->right;
-                    nElem = nElem->below;
-                }
-            }
-
-            if (sum != 0.0) {
+        for (int j = 0; j < m; j++) {
+            float randomValue = (float)rand() / RAND_MAX; // Generate random value between 0 and 1
+            if (randomValue > 0.7) { // 70% chance of generating a non-zero value
                 Matriz* newElem = (Matriz*)malloc(sizeof(Matriz));
                 newElem->line = i;
                 newElem->column = j;
-                newElem->info = sum;
+                newElem->info = randomValue;
 
                 lastInRow->right = newElem;
                 newElem->right = newRowHead;
                 lastInRow = newElem;
             }
-
-            nColHead = nColHead->below;
         }
 
-        mRowHead = mRowHead->below;
+        currentRowHead = newRowHead;
     }
 
     return result;
 }
-
-
-
-// Função 6 = transpor uma matriz
-Matriz* matrix_transpose(Matriz* m) {
-    int numRows = m->column;
-    int numCols = m->line;
-
-    Matriz* result = (Matriz*)malloc(sizeof(Matriz));
-    result->line = numRows;
-    result->column = numCols;
-    result->right = result;
-    result->below = result;
-
-    Matriz* mRowHead = m->right;
-
-    for (int i = 0; i < numRows; i++) {
-        Matriz* newRowHead = (Matriz*)malloc(sizeof(Matriz));
-        newRowHead->line = -1;
-        newRowHead->column = -1;
-        newRowHead->right = newRowHead;
-        newRowHead->below = result->below;
-        result->below = newRowHead;
-
-        Matriz* lastInRow = newRowHead;
-
-        for (int j = 0; j < numCols; j++) {
-            if (mRowHead->below->line == i) {
-                Matriz* newElem = (Matriz*)malloc(sizeof(Matriz));
-                newElem->line = j;
-                newElem->column = i;
-                newElem->info = mRowHead->below->info;
-
-                lastInRow->right = newElem;
-                newElem->right = newRowHead;
-                lastInRow = newElem;
-
-                mRowHead = mRowHead->below;
-            }
-        }
-    }
-
-    return result;
-}
-
-
-
-// Função 7 = obter um elemento da matriz
-float matrix_getelem(Matriz* m, int x, int y) {
-    if (x < 0 || x >= m->line || y < 0 || y >= m->column) {
-        
-        return 0.0;
-    }
-
-    Matriz* rowHead = m->right;
-    for (int i = 0; i < x; i++) {
-        rowHead = rowHead->below;
-    }
-
-    Matriz* current = rowHead->right;
-    while (current != rowHead) {
-        if (current->column == y) {
-            return current->info;
-        }
-        current = current->right;
-    }
-
-    return 0.0; // Elemento não encontrado, assume-se zero
-}
-
-
-
-// Função 8 = alterar um elemento da matriz
-void matrix_setelem(Matriz* m, int x, int y, float elem) {
-    if (x < 0 || x >= m->line || y < 0 || y >= m->column) {
-        
-        return;
-    }
-
-    Matriz* rowHead = m->right;
-    for (int i = 0; i < x; i++) {
-        rowHead = rowHead->below;
-    }
-
-    Matriz* prev = rowHead;
-    Matriz* current = rowHead->right;
-
-    while (current != rowHead && current->column < y) {
-        prev = current;
-        current = current->right;
-    }
-
-    if (current != rowHead && current->column == y) {
-        
-        current->info = elem;
-    } else {
-        
-        Matriz* newElem = (Matriz*)malloc(sizeof(Matriz));
-        newElem->line = x;
-        newElem->column = y;
-        newElem->info = elem;
-
-        prev->right = newElem;
-        newElem->right = current;
-    }
-}
-
-
-
