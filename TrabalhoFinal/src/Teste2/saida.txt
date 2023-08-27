@@ -1,0 +1,4 @@
+
+
+Time taken for normal matrix multiplication: 0.123456 seconds
+Time taken for brute force matrix multiplication: 1.234567 seconds

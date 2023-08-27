@@ -5,6 +5,9 @@
 
 
 int main() {
+
+    freopen("saida.txt", "w", stdout);
+
     unsigned int matrixSize = 1000; 
 
     Matriz* matrixA = matrix_create(matrixSize);
