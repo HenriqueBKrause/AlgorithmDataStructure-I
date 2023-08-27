@@ -19,6 +19,7 @@ Matriz* matrix_create(void) {
     
     int m, n;
 
+// Aqui inserimos o numero de colunas e linhas;
     scanf("%d %d", &m, &n);
 
     Matriz* head = (Matriz*)malloc(sizeof(Matriz));
@@ -28,12 +29,14 @@ Matriz* matrix_create(void) {
     head->right = head;
     head->below = head;
 
-
+ 
     Matriz* lastInRow[m];
     for (int i = 0; i < m; i++) {
         lastInRow[i] = head;
     }
 
+
+//aqui esta a solicitação dos valores da matriz em um laço 
     while (1) {
 
         int i, j;

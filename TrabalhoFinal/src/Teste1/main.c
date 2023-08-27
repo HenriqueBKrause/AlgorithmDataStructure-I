@@ -1,14 +1,14 @@
 // Nomes: Henrique Krause & Rodrigo Cesar  
 // Trabalho final de AED 1
 
-
 #include <stdio.h>
 #include "matrix.h"
 
+int main(void) {
 
+    freopen("saida.txt", "w", stdout);
 
-int main ( void ) {
-    /* Inicializacao da aplicacao ... */
+ 
     Matriz* A = matrix_create();
     matrix_print(A);
 
